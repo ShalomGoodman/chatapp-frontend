@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
+import { useRouter } from 'next/router'; // <-- Import useRouter hook from next/router
 import { Button, Input } from "antd";
 import "antd/dist/antd.css";
 // import "font-awesome/css/font-awesome.min.css";
@@ -26,15 +27,17 @@ function ChatRoom({ username, id }) {
   const [currentChatUsers, setCurrentChatUsers] = useState([]);
 
   // Socket
-  const io = socket("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com");
+  const io = socket(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}`);
   let welcome;
+
+  const router = useRouter();
 
   // Effects
   useEffect(() => {
 
     io.on("disconnect", () => {
       io.off();
-      location.replace("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/");
+      location.replace(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/`);
       console.log("disconnected");
     });
 
@@ -50,7 +53,7 @@ function ChatRoom({ username, id }) {
       welcome = welcomeMessage;
       setMessages([welcomeMessage]);
 
-    await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms/${chatroom}?populate=messages,active_users`)
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms/${chatroom}?populate=messages,active_users`)
       .then(async (res) => {
         const response = await res.json();
         let messagesArr = [welcome];
@@ -70,7 +73,7 @@ function ChatRoom({ username, id }) {
       })
       .catch((e) => console.log(e.message));
 
-      await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/active-users/${id}?populate=chatrooms`)
+      await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/active-users/${id}?populate=chatrooms`)
         .then(async (res) => {
           const response = await res.json();
       
@@ -82,7 +85,7 @@ function ChatRoom({ username, id }) {
     });
 
     io.on("roomData", async (data) => {
-      await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms/${chatroom}?populate=active_users`).then(async (e) => {
+      await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms/${chatroom}?populate=active_users`).then(async (e) => {
         const response = await e.json();
         let usersArr = [];
 
@@ -94,7 +97,7 @@ function ChatRoom({ username, id }) {
     });
 
     io.on("message", async (data, error) => {
-      await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms/${chatroom}?populate=messages`)
+      await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms/${chatroom}?populate=messages`)
         .then(async (res) => {
           const response = await res.json();
           let arr = [welcome];
@@ -113,10 +116,6 @@ function ChatRoom({ username, id }) {
         .catch((e) => console.log(e.message));
     });
   }, [username, chatroom]);
-
-  useEffect(() => {
-    console.log(currentChatUsers);
-  }, [currentChatUsers]);
   
 
 
@@ -157,7 +156,7 @@ function ChatRoom({ username, id }) {
         active_users: [{"id": 1}]
       },
     };
-    await fetch("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms", {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -175,9 +174,20 @@ function ChatRoom({ username, id }) {
     setChatroom(chatroom);
   };
 
+  const handleLogout = () => {
+    console.log("logout");
+    if (typeof window !== 'undefined') { // Check if window object exists
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+    }
+    router.push('/login');
+  };
+
   return (
     <ChatContainer>
       <Header room="Group Chat" />
+      <h3>Hello, {username}</h3>
+      <button onClick={handleLogout}>Logout</button>
       <StyledContainer>
         <h3>Active Users in room: {chatroom}</h3>
         <ul>

@@ -13,7 +13,7 @@ export default function Home() {
     };
     const SECRET = "this is a secret";
     const token = jwt.sign(account, SECRET);
-    let message = `https://sos-chat-app-frontend-7416e786c22f.herokuapp.com/chat/${token}`;
+    let message = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/chat/${token}`;
     let data = {
       email, // User's email
       message,
@@ -27,7 +27,7 @@ export default function Home() {
         token,
       },
     };
-    await fetch("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/accounts", {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/accounts`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
