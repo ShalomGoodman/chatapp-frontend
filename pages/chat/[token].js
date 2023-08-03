@@ -18,7 +18,7 @@ export default function Chat() {
     try {
       const payload = jwt.verify(token, SECRET); // Verifying the token using the secret
       async function fetchData() {
-        await fetch(`http://localhost:1337/api/accounts/${payload.id}`)
+        await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/accounts/${payload.id}`)
           .then(async (e) => {
             const account = await e.json();
             setUsername(account.data.attributes.username);

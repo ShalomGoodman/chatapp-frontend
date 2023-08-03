@@ -27,7 +27,7 @@ export default function Home() {
         token,
       },
     };
-    await fetch("http://localhost:1337/api/accounts", {
+    await fetch("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/accounts", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

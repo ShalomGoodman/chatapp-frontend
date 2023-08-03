@@ -26,7 +26,7 @@ function ChatRoom({ username, id }) {
   const [currentChatUsers, setCurrentChatUsers] = useState([]);
 
   // Socket
-  const io = socket("http://localhost:1337");
+  const io = socket("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com");
   let welcome;
 
   // Effects
@@ -34,7 +34,7 @@ function ChatRoom({ username, id }) {
 
     io.on("disconnect", () => {
       io.off();
-      location.replace("http://localhost:3000/");
+      location.replace("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/");
       console.log("disconnected");
     });
 
@@ -50,7 +50,7 @@ function ChatRoom({ username, id }) {
       welcome = welcomeMessage;
       setMessages([welcomeMessage]);
 
-    await fetch(`http://localhost:1337/api/chatrooms/${chatroom}?populate=messages,active_users`)
+    await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms/${chatroom}?populate=messages,active_users`)
       .then(async (res) => {
         const response = await res.json();
         let messagesArr = [welcome];
@@ -70,7 +70,7 @@ function ChatRoom({ username, id }) {
       })
       .catch((e) => console.log(e.message));
 
-      await fetch(`http://localhost:1337/api/active-users/${id}?populate=chatrooms`)
+      await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/active-users/${id}?populate=chatrooms`)
         .then(async (res) => {
           const response = await res.json();
       
@@ -82,7 +82,7 @@ function ChatRoom({ username, id }) {
     });
 
     io.on("roomData", async (data) => {
-      await fetch(`http://localhost:1337/api/chatrooms/${chatroom}?populate=active_users`).then(async (e) => {
+      await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms/${chatroom}?populate=active_users`).then(async (e) => {
         const response = await e.json();
         let usersArr = [];
 
@@ -94,7 +94,7 @@ function ChatRoom({ username, id }) {
     });
 
     io.on("message", async (data, error) => {
-      await fetch(`http://localhost:1337/api/chatrooms/${chatroom}?populate=messages`)
+      await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms/${chatroom}?populate=messages`)
         .then(async (res) => {
           const response = await res.json();
           let arr = [welcome];
@@ -130,6 +130,7 @@ function ChatRoom({ username, id }) {
         },
       };
       io.emit("sendMessage", strapiData, (error) => {
+        console.log("send message");
         if (error) {
           alert(error);
         }
@@ -156,7 +157,7 @@ function ChatRoom({ username, id }) {
         active_users: [{"id": 1}]
       },
     };
-    await fetch("http://localhost:1337/api/chatrooms", {
+    await fetch("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/chatrooms", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
