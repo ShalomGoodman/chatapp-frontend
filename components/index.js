@@ -13,7 +13,7 @@ import {
   ChatBox,
   StyledButton,
   SendIcon,
-} from "../pages/chat/styles";
+} from "../styles/styles";
 
 function ChatRoom({ username, id }) {
   // States
