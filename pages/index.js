@@ -13,7 +13,7 @@ export default function Home() {
     };
     const SECRET = "this is a secret";
     const token = jwt.sign(account, SECRET);
-    let message = `http://localhost:3000/chat/${token}`;
+    let message = `https://sos-chat-app-frontend-7416e786c22f.herokuapp.com/chat/${token}`;
     let data = {
       email, // User's email
       message,
