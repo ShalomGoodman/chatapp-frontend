@@ -6,6 +6,7 @@ import "antd/dist/antd.css";
 // import "font-awesome/css/font-awesome.min.css";
 import Header from "./Header";
 import Messages from "./Messages";
+import Searchbox from "./Searchbox";
 import List from "./List";
 import socket from "socket.io-client";
 import {
@@ -16,7 +17,7 @@ import {
   SendIcon,
 } from "../styles/styles";
 
-function ChatRoom({ username, id }) {
+function ChatRoom({ username, id, userId }) {
   // States
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -25,6 +26,9 @@ function ChatRoom({ username, id }) {
   const [joinedChats, setJoinedChats] = useState([]);
   const [chatName, setChatName] = useState("");
   const [currentChatUsers, setCurrentChatUsers] = useState([]);
+  const activeUser = localStorage.getItem("active_user");
+
+
 
   // Socket
   const io = socket(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}`);
@@ -41,7 +45,7 @@ function ChatRoom({ username, id }) {
       console.log("disconnected");
     });
 
-    io.emit("join", { username, chatroom }, (error) => {
+    io.emit("join", { username, chatroom, userId, activeUser }, (error) => {
       if (error) return alert(error);
     });
 
@@ -73,7 +77,7 @@ function ChatRoom({ username, id }) {
       })
       .catch((e) => console.log(e.message));
 
-      await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/active-users/${id}?populate=chatrooms`)
+      await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/active-users/${activeUser}?populate=chatrooms`)
         .then(async (res) => {
           const response = await res.json();
       
@@ -81,7 +85,6 @@ function ChatRoom({ username, id }) {
           setJoinedChats(arr);
         })
         .catch((e) => console.log(e.message));
-      
     });
 
     io.on("roomData", async (data) => {
@@ -116,8 +119,6 @@ function ChatRoom({ username, id }) {
         .catch((e) => console.log(e.message));
     });
   }, [username, chatroom]);
-  
-
 
   const sendMessage = (message, chatroom) => {
     if (message) {
@@ -153,7 +154,7 @@ function ChatRoom({ username, id }) {
     let strapiData = {
       data: {
         chat_name: chatName,
-        active_users: [{"id": 1}]
+        active_users: [{"id": activeUser}]
       },
     };
     await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms`, {
@@ -218,6 +219,7 @@ function ChatRoom({ username, id }) {
           <li onClick={() => handleChatChange(chat.id)} key={chat.id}>{chat.attributes.chat_name}</li>
         ))}
       </ul>
+          <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
     </ChatContainer>
   );
 }
