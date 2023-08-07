@@ -13,8 +13,13 @@ export default function Chat() {
   const [userr, setUserr] = useState("");
 
   const token = router.query.token; 
+
+
   useEffect(() => {
     if (!router.isReady) return console.log("Loading... Please wait");
+
+    if (!token) return router.push("/");
+
     try {
       const payload = jwt.verify(token, SECRET);
       async function fetchData() {

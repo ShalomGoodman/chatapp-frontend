@@ -1,10 +1,49 @@
 import styles from "../styles/Home.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [email, setEmail] = useState("");
   const [user, setUser] = useState("");
+
+  const router = useRouter();
+
+  useEffect(() => {
+
+    const checkLoginStatus = async () => {
+      const storedUsername = localStorage.getItem("username");
+      const storedToken = localStorage.getItem("token");
+
+      if (storedUsername && storedToken) {
+        console.log("useEffect");
+        try {
+          const SECRET = "this is a secret"; // JWT Secret
+  
+          // Verify the token
+          const payload = jwt.verify(storedToken, SECRET);
+  
+          // Get the user's details from the server
+          const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/accounts/${payload.id}`);
+          const account = await response.json();
+
+          if (account && account.data && account.data.attributes &&
+              storedUsername === account.data.attributes.username &&
+              storedToken === account.data.attributes.token) {
+            // If the username and token match the stored details, it's a valid login
+            router.push(`/chat/${storedToken}`);
+          }
+        } catch (error) {
+          console.error(error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+        }
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   const handlesubmit = async (e) => {
     e.preventDefault();
     const id = Math.trunc(Math.random() * 1000000);
