@@ -30,12 +30,12 @@ export default function Chat() {
             const account = await e.json();
             console.log(account);
             setUsername(account.data.attributes.username);
-            setId(account.id);
+            setId(account.data.id);
             setUserr(done);
             if (typeof window !== 'undefined') { // <-- Check if window object exists
               localStorage.setItem("username", account.data.attributes.username);
               localStorage.setItem("token", account.data.attributes.token);
-              localStorage.setItem("id", account.id);
+              localStorage.setItem("id", account.data.id);
               localStorage.setItem("active_user", account.data.attributes.active_user.data.id);
             }
             if (token !== account.data.attributes.token) {
