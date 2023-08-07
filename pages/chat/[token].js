@@ -12,38 +12,61 @@ export default function Chat() {
   const [id, setId] = useState("");
   const [userr, setUserr] = useState("");
 
-  const token = router.query.token; // Getting the token from the URL
+  const token = router.query.token; 
+  
+
+
   useEffect(() => {
-    if (!router.isReady) return console.log("Loading... Please wait"); // Checking if the token has been fetched from the URL.
+    if (!router.isReady) return console.log("Loading... Please wait");
+
+    if (!token) return router.push("/");
+
     try {
-      const payload = jwt.verify(token, SECRET); // Verifying the token using the secret
+      const payload = jwt.verify(token, SECRET);
       async function fetchData() {
-        await fetch(`https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/accounts/${payload.id}`)
+        console.log(process.env.NEXT_PUBLIC_STRAPI_SERVER_URL);
+        await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/accounts/${payload.id}/?populate=active_user`)
           .then(async (e) => {
             const account = await e.json();
+            console.log(account);
             setUsername(account.data.attributes.username);
             setId(account.data.id);
             setUserr(done);
+            if (typeof window !== 'undefined') { // <-- Check if window object exists
+              localStorage.setItem("username", account.data.attributes.username);
+              localStorage.setItem("token", account.data.attributes.token);
+              localStorage.setItem("id", account.data.id);
+              localStorage.setItem("active_user", account.data.attributes.active_user.data.id);
+            }
             if (token !== account.data.attributes.token) {
+              if (typeof window !== 'undefined') { // <-- Check if window object exists
+                localStorage.removeItem("token");
+                localStorage.removeItem("username");
+                localStorage.removeItem("id");
+              }
               return router.push("/");
             }
           })
           .catch((e) => {
             console.log(e.message);
+            if (typeof window !== 'undefined') { // <-- Check if window object exists
+              localStorage.removeItem("token");
+              localStorage.removeItem("username");
+            }
             return router.push("/");
           });
       }
       fetchData();
-      setDone("done"); // granting access to the chat page
+      setDone("done");
     } catch (error) {
       console.log("error", error.message);
-      router.push("/"); // redirecting the user to the home page if an error occured
+      router.push("/");
     }
-  }, [token, userr, done]); // Listens for a change in token
+  }, [token, userr, done]);
   return (
     <div>
       {done == "done" && userr === "done" ? ( // Waiting for access to be granted
-        <ChatRoom username={username} id={2} />
+        <ChatRoom username={username} id={1} userId={id} />
       ) : (
         <h1>Verifying token..... Please wait</h1>
       )}

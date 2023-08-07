@@ -9,8 +9,8 @@ function List(props) {
 
 
   const handleClick = async (id, socketid) => {
-    const io = socket("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com");
-    await fetch("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/active-users/" + id, {
+    const io = socket(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}`);
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/active-users/${id}`, {
       method: "Delete",
       headers: {
         "Content-type": "application/json",

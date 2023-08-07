@@ -1,10 +1,49 @@
 import styles from "../styles/Home.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [email, setEmail] = useState("");
   const [user, setUser] = useState("");
+
+  const router = useRouter();
+
+  useEffect(() => {
+
+    const checkLoginStatus = async () => {
+      const storedUsername = localStorage.getItem("username");
+      const storedToken = localStorage.getItem("token");
+
+      if (storedUsername && storedToken) {
+        console.log("useEffect");
+        try {
+          const SECRET = "this is a secret"; // JWT Secret
+  
+          // Verify the token
+          const payload = jwt.verify(storedToken, SECRET);
+  
+          // Get the user's details from the server
+          const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/accounts/${payload.id}`);
+          const account = await response.json();
+
+          if (account && account.data && account.data.attributes &&
+              storedUsername === account.data.attributes.username &&
+              storedToken === account.data.attributes.token) {
+            // If the username and token match the stored details, it's a valid login
+            router.push(`/chat/${storedToken}`);
+          }
+        } catch (error) {
+          console.error(error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+        }
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   const handlesubmit = async (e) => {
     e.preventDefault();
     const id = Math.trunc(Math.random() * 1000000);
@@ -13,7 +52,7 @@ export default function Home() {
     };
     const SECRET = "this is a secret";
     const token = jwt.sign(account, SECRET);
-    let message = `https://sos-chat-app-frontend-7416e786c22f.herokuapp.com/chat/${token}`;
+    let message = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/chat/${token}`;
     let data = {
       email, // User's email
       message,
@@ -27,7 +66,7 @@ export default function Home() {
         token,
       },
     };
-    await fetch("https://sos-chat-app-backend-ec89bfddc114.herokuapp.com/api/accounts", {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/accounts`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
