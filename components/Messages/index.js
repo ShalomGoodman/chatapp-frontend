@@ -15,11 +15,12 @@ function Messages(props) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  
   return (
     <StyledMessages>
       {messages.map((message, i) => (
-        <ScrollToBottom>
-          <div key={i} ref={messagesEndRef}>
+        <ScrollToBottom key={i}>
+          <div ref={messagesEndRef}>
             <Message message={message} username={user} />
           </div>
         </ScrollToBottom>

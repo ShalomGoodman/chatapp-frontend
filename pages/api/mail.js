@@ -8,7 +8,7 @@ export default function (req, res) {
     secure: "true",
     auth: {
       user: "shalomgoodman8@gmail.com",
-      pass: "yjeudbefnqlthlrt", // change to process.env.PASSWORD
+      pass: process.env.GMAIL_PASSWORD
     },
   });
 
