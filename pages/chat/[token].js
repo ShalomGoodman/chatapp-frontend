@@ -36,7 +36,11 @@ export default function Chat() {
               localStorage.setItem("username", account.data.attributes.username);
               localStorage.setItem("token", account.data.attributes.token);
               localStorage.setItem("id", account.data.id);
-              localStorage.setItem("active_user", account.data.attributes.active_user.data.id);
+              const activeUserId = account?.data?.attributes?.active_user?.data?.id;
+            if (activeUserId !== undefined) {
+              localStorage.setItem("active_user", activeUserId);
+            }
+
             }
             if (token !== account.data.attributes.token) {
               if (typeof window !== 'undefined') { // <-- Check if window object exists
