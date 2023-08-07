@@ -43,6 +43,7 @@ export default function Chat() {
                 localStorage.removeItem("token");
                 localStorage.removeItem("username");
                 localStorage.removeItem("id");
+                localStorage.removeItem("active_user");
               }
               return router.push("/");
             }
