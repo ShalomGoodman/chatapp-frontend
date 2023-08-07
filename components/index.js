@@ -6,6 +6,7 @@ import "antd/dist/antd.css";
 // import "font-awesome/css/font-awesome.min.css";
 import Header from "./Header";
 import Messages from "./Messages";
+import Searchbox from "./Searchbox";
 import List from "./List";
 import socket from "socket.io-client";
 import {
@@ -116,8 +117,6 @@ function ChatRoom({ username, id }) {
         .catch((e) => console.log(e.message));
     });
   }, [username, chatroom]);
-  
-
 
   const sendMessage = (message, chatroom) => {
     if (message) {
@@ -218,6 +217,7 @@ function ChatRoom({ username, id }) {
           <li onClick={() => handleChatChange(chat.id)} key={chat.id}>{chat.attributes.chat_name}</li>
         ))}
       </ul>
+          <Searchbox chatChange={handleChatChange} />
     </ChatContainer>
   );
 }
