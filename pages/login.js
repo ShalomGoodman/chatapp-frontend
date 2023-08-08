@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
 import { useRouter } from "next/router";
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -27,6 +28,7 @@ export default function Login() {
               storedUsername === account.data.attributes.username &&
               storedToken === account.data.attributes.token) {
             // If the username and token match the stored details, it's a valid login
+            toast.success(`Welcome back, ${storedUsername}!`);
             router.push(`/chat/${storedToken}`);
           }
         } catch (error) {
@@ -59,11 +61,6 @@ export default function Login() {
         throw new Error("User not found");
       }
   
-      console.log('Username from form:', username);
-      console.log('Username from server:', account.data.attributes.username);
-      console.log('Token from form:', token);
-      console.log('Token from server:', account.data.attributes.token);
-  
       // If the username and token match the stored details, it's a valid login
       if (username !== account.data.attributes.username || token !== account.data.attributes.token) {
         throw new Error("Invalid username or token");
@@ -76,6 +73,7 @@ export default function Login() {
       }
   
       // Redirect to the chat room
+      toast.success(`Welcome back, ${username}!`);
       router.push(`/chat/${token}`);
   
     } catch (error) {

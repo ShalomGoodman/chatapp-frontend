@@ -7,17 +7,16 @@ export const ChatContainer = styled.div`
     justify-content:center;
     background: #f2f2f2;
     padding: 40px;
-    margin: 100px auto;
-    max-width: 60vw;
+    margin: auto;
+    max-width: 100vw;
     box-shadow: 5px 10px 18px #888888;
-    height: 80vh;
+    height: 100vh;
 `;
 
 export const StyledContainer = styled.div`
     display: flex;
     width: 100%;
     flex: 1;
-    border-radius: 8px;
     height: 60%;
     justify-content: space-between;
 `;

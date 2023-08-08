@@ -1,7 +1,22 @@
 /* eslint-disable */
 import React from "react";
+import { useRouter } from 'next/router'; // <-- Import useRouter hook from next/router
+import { toast } from 'react-toastify';
 
 function Header(props) {
+
+  const router = useRouter();
+
+  const handleLogout = () => {
+    console.log("logout");
+    if (typeof window !== 'undefined') { // Check if window object exists
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+    }
+    router.push('/login');
+    toast.success(`Logged out successfully!`);
+  };
+
   return (
     <div
       style={{
@@ -48,6 +63,7 @@ function Header(props) {
             <i className="fa fa-times-circle" aria-hidden="true"></i>
           </div>
         </a>
+        <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
   );

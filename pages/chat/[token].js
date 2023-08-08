@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import ChatRoom from "../../components/index";
+import { toast } from 'react-toastify';
 
 export default function Chat() {
   const router = useRouter();
@@ -58,6 +59,7 @@ export default function Chat() {
             }
           })
           .catch((e) => {
+            toast.error(`An error occurred while fetching the account: ${e.message}`);
             console.error("An error occurred while fetching the account:", e.message);
             if (typeof window !== 'undefined') { // <-- Check if window object exists
               console.log("Removing items from local storage due to error.");
