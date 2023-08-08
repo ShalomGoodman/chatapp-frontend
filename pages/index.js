@@ -2,6 +2,7 @@ import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
 import { useRouter } from "next/router";
+import { toast } from 'react-toastify';
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -31,6 +32,7 @@ export default function Home() {
               storedUsername === account.data.attributes.username &&
               storedToken === account.data.attributes.token) {
             // If the username and token match the stored details, it's a valid login
+            toast.success(`Welcome back, ${storedUsername}!`);
             router.push(`/chat/${storedToken}`);
           }
         } catch (error) {
@@ -40,7 +42,6 @@ export default function Home() {
         }
       }
     };
-
     checkLoginStatus();
   }, []);
 
@@ -66,6 +67,7 @@ export default function Home() {
         token,
       },
     };
+    toast.loading('Sending Email...');
     await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/accounts`, {
       method: "POST",
       headers: {
@@ -87,8 +89,12 @@ export default function Home() {
       .then(async (res) => {
         console.log("fetching");
         if (res.status === 200) {
+          toast.dismiss();
+          toast.success(`Verification email sent to ${email}!`, { autoClose: 2000 } );
           console.log(await res.json());
         } else {
+          toast.dismiss();
+          toast.error(`There was an unexpected problem, please try again.`, { autoClose: 2000 } );
           console.log(await res.json());
         }
       })
@@ -99,7 +105,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <form className={styles.main}>
-        <h1>Login</h1>
+        <h1>Signup</h1>
         <label htmlFor="user">Username: </label>
         <input
           type="text"

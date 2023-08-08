@@ -9,6 +9,7 @@ import Messages from "./Messages";
 import Searchbox from "./Searchbox";
 import List from "./List";
 import socket from "socket.io-client";
+import { toast } from 'react-toastify';
 import {
   ChatContainer,
   StyledContainer,
@@ -21,14 +22,12 @@ function ChatRoom({ username, id, userId }) {
   // States
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [users, setUsers] = useState([]);
   const [chatroom, setChatroom] = useState(`${id}`);
   const [joinedChats, setJoinedChats] = useState([]);
   const [chatName, setChatName] = useState("");
   const [currentChatUsers, setCurrentChatUsers] = useState([]);
+  const [currentChatName, setCurrentChatName] = useState("");
   const activeUser = localStorage.getItem("active_user");
-
-
 
   // Socket
   const io = socket(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}`);
@@ -43,6 +42,7 @@ function ChatRoom({ username, id, userId }) {
       io.off();
       location.replace(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/`);
       console.log("disconnected");
+      toast.error('Disconnected from server. Please refresh the page.');
     });
 
     io.emit("join", { username, chatroom, userId, activeUser }, (error) => {
@@ -71,7 +71,8 @@ function ChatRoom({ username, id, userId }) {
         response.data.attributes.active_users.data.forEach((user) => {
           usersArr = [...usersArr, user.attributes];
         });
-        
+
+        setCurrentChatName(response.data.attributes.chat_name);
         setMessages((msgs) => messagesArr);
         setCurrentChatUsers((users) => usersArr);
       })
@@ -141,11 +142,6 @@ function ChatRoom({ username, id, userId }) {
     }
   };
 
-  const handleInputChange = (e) => {
-    setMessage(e.target.value);
-    setChatName(e.target.value);
-  };
-
   const handleMessageSend = () => {
     sendMessage(message, chatroom);
   };
@@ -167,59 +163,69 @@ function ChatRoom({ username, id, userId }) {
       .then(async (e) => {
         const response = await e.json();
         setChatroom(response.data.id);
+        toast.success(`Chatroom ${chatName} created!`);
+
+        setChatName("");
       })
-      .catch((e) => console.log(e.message));
+      .catch((e) => {
+        console.log(e.message)
+        toast.error(`An error occurred while creating the chatroom: ${e.message}`);
+      });
   };
 
   const handleChatChange = (chatroom) => {
     setChatroom(chatroom);
   };
 
-  const handleLogout = () => {
-    console.log("logout");
-    if (typeof window !== 'undefined') { // Check if window object exists
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-    }
-    router.push('/login');
-  };
+
 
   return (
     <ChatContainer>
-      <Header room="Group Chat" />
-      <h3>Hello, {username}</h3>
-      <button onClick={handleLogout}>Logout</button>
+      <Header room={currentChatName} />  
       <StyledContainer>
-        <h3>Active Users in room: {chatroom}</h3>
-        <ul>
-          {currentChatUsers.map((user, index) => (
-            <li key={index}>{user.users}</li>
-          ))}
-        </ul>
+        <div>
+          <h2>Hello, {username}</h2>
+          <h3>Members of room: {currentChatName}</h3>
+          <ul>
+            {currentChatUsers.map((user, index) => (
+              <li key={index}>{user.users}</li>
+            ))}
+          </ul>
+          <h3>Create a Chat</h3>
+          <input onChange={(e) => setChatName(e.target.value)} type="text" placeholder="Make a chat name" />
+          <Button onClick={handleChatCreate}>Create Chat</Button>
+          <h3>Joined Chats</h3>
+            {joinedChats.map((chat) => (
+              <button onClick={() => handleChatChange(chat.id)} key={chat.id}>{chat.attributes.chat_name}</button>
+            ))}
+          <h3>Join a Chat</h3>
+              <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
+        </div>
 
         <ChatBox>
+          
           <Messages messages={messages} username={username} />
           <Input
             type="text"
             placeholder="Type your message"
             value={message}
-            onChange={handleInputChange}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={event => {
+              if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent a newline character or other default action
+                handleMessageSend();
+              }
+            }}
           />
           <StyledButton onClick={handleMessageSend}>
             <SendIcon>
               <i className="fa fa-paper-plane" />
             </SendIcon>
           </StyledButton>
+          
         </ChatBox>
+
       </StyledContainer>
-      <h3>Joined Chats</h3>
-      <input onChange={handleInputChange} type="text" placeholder="Make a chat name" /><Button onClick={handleChatCreate}>Create Chat</Button>
-      <ul>
-        {joinedChats.map((chat) => (
-          <li onClick={() => handleChatChange(chat.id)} key={chat.id}>{chat.attributes.chat_name}</li>
-        ))}
-      </ul>
-          <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
     </ChatContainer>
   );
 }
