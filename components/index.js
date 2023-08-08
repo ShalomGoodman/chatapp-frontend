@@ -1,13 +1,11 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/router'; // <-- Import useRouter hook from next/router
 import { Button, Input } from "antd";
 import "antd/dist/antd.css";
 // import "font-awesome/css/font-awesome.min.css";
 import Header from "./Header";
 import Messages from "./Messages";
 import Searchbox from "./Searchbox";
-import List from "./List";
 import socket from "socket.io-client";
 import { toast } from 'react-toastify';
 import {
@@ -27,13 +25,12 @@ function ChatRoom({ username, id, userId }) {
   const [chatName, setChatName] = useState("");
   const [currentChatUsers, setCurrentChatUsers] = useState([]);
   const [currentChatName, setCurrentChatName] = useState("");
+  
   const activeUser = localStorage.getItem("active_user");
 
   // Socket
   const io = socket(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}`);
   let welcome;
-
-  const router = useRouter();
 
   // Effects
   useEffect(() => {
@@ -122,7 +119,9 @@ function ChatRoom({ username, id, userId }) {
   }, [username, chatroom]);
 
   const sendMessage = (message, chatroom) => {
+    console.log("sendMessage function triggered.");
     if (message) {
+      console.log("Message:", message);
       let strapiData = {
         data: {
           user: username,
@@ -131,18 +130,21 @@ function ChatRoom({ username, id, userId }) {
         },
       };
       io.emit("sendMessage", strapiData, (error) => {
-        console.log("send message");
+        console.log("send message was emitted.");
         if (error) {
           alert(error);
+          console.log(`there was an error: ${error}`);
         }
       });
       setMessage("");
+      console.log("Message sent.");
     } else {
       alert("Message can't be empty");
     }
   };
 
   const handleMessageSend = () => {
+    console.log("handleMessageSend function triggered.");
     sendMessage(message, chatroom);
   };
 

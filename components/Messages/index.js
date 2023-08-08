@@ -21,7 +21,7 @@ function Messages(props) {
       {messages.map((message, i) => (
         <ScrollToBottom key={i}>
           <div ref={messagesEndRef}>
-            <Message message={message} username={user} />
+            <Message message={message} username={user}  />
           </div>
         </ScrollToBottom>
       ))}
