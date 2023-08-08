@@ -40,10 +40,7 @@ export default function Chat() {
               localStorage.setItem("username", account.data.attributes.username);
               localStorage.setItem("token", account.data.attributes.token);
               localStorage.setItem("id", account.data.id);
-              const activeUserId = account?.data?.attributes?.active_user?.data?.id;
-              if (activeUserId !== undefined) {
-                localStorage.setItem("active_user", activeUserId);
-              }
+              localStorage.setItem("active_user", account.data.attributes.active_user.data.id);
             }
 
             if (token !== account.data.attributes.token) {
@@ -65,6 +62,8 @@ export default function Chat() {
               console.log("Removing items from local storage due to error.");
               localStorage.removeItem("token");
               localStorage.removeItem("username");
+              localStorage.removeItem("id");
+              localStorage.removeItem("active_user");
             }
             return router.push("/");
           });

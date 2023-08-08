@@ -12,6 +12,8 @@ function Header(props) {
     if (typeof window !== 'undefined') { // Check if window object exists
       localStorage.removeItem("token");
       localStorage.removeItem("username");
+      localStorage.removeItem("id");
+      localStorage.removeItem("active_user");
     }
     router.push('/login');
     toast.success(`Logged out successfully!`);
