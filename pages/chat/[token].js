@@ -1,8 +1,8 @@
-/* eslint-disable */
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import ChatRoom from "../../components/index";
+import { toast } from 'react-toastify';
 
 export default function Chat() {
   const router = useRouter();
@@ -12,38 +12,44 @@ export default function Chat() {
   const [id, setId] = useState("");
   const [userr, setUserr] = useState("");
 
-  const token = router.query.token; 
-  
-
+  const token = router.query.token;
 
   useEffect(() => {
-    if (!router.isReady) return console.log("Loading... Please wait");
+    if (!router.isReady) return console.log("Router is not ready yet. Loading... Please wait");
+
+    console.log("Token from URL:", token);
 
     if (!token) return router.push("/");
 
     try {
       const payload = jwt.verify(token, SECRET);
+      console.log("JWT payload:", payload);
+
       async function fetchData() {
-        console.log(process.env.NEXT_PUBLIC_STRAPI_SERVER_URL);
+        console.log("Fetching from server URL:", process.env.NEXT_PUBLIC_STRAPI_SERVER_URL);
         await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/accounts/${payload.id}/?populate=active_user`)
           .then(async (e) => {
             const account = await e.json();
-            console.log(account);
+            console.log("Account fetched:", account);
             setUsername(account.data.attributes.username);
             setId(account.data.id);
             setUserr(done);
+
             if (typeof window !== 'undefined') { // <-- Check if window object exists
+              console.log("Setting values in local storage.");
               localStorage.setItem("username", account.data.attributes.username);
               localStorage.setItem("token", account.data.attributes.token);
               localStorage.setItem("id", account.data.id);
               const activeUserId = account?.data?.attributes?.active_user?.data?.id;
-            if (activeUserId !== undefined) {
-              localStorage.setItem("active_user", activeUserId);
+              if (activeUserId !== undefined) {
+                localStorage.setItem("active_user", activeUserId);
+              }
             }
 
-            }
             if (token !== account.data.attributes.token) {
+              console.warn("Token mismatch detected:", token, account.data.attributes.token);
               if (typeof window !== 'undefined') { // <-- Check if window object exists
+                console.log("Removing items from local storage due to token mismatch.");
                 localStorage.removeItem("token");
                 localStorage.removeItem("username");
                 localStorage.removeItem("id");
@@ -53,8 +59,10 @@ export default function Chat() {
             }
           })
           .catch((e) => {
-            console.log(e.message);
+            toast.error(`An error occurred while fetching the account: ${e.message}`);
+            console.error("An error occurred while fetching the account:", e.message);
             if (typeof window !== 'undefined') { // <-- Check if window object exists
+              console.log("Removing items from local storage due to error.");
               localStorage.removeItem("token");
               localStorage.removeItem("username");
             }
@@ -64,13 +72,13 @@ export default function Chat() {
       fetchData();
       setDone("done");
     } catch (error) {
-      console.log("error", error.message);
+      console.error("Error during token verification:", error.message);
       router.push("/");
     }
   }, [token, userr, done]);
   return (
     <div>
-      {done == "done" && userr === "done" ? ( // Waiting for access to be granted
+      {done == "done" && userr === "done" ? (
         <ChatRoom username={username} id={1} userId={id} />
       ) : (
         <h1>Verifying token..... Please wait</h1>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 function Searchbox({ chatChange, activeUser }) {
   const [chatroom, setChatroom] = useState('');
@@ -29,12 +30,15 @@ function Searchbox({ chatChange, activeUser }) {
           body: JSON.stringify(updatedActiveUserData),
         });
         setChatroom('');
+        toast.success(`Successfully Joined chatroom ${chatroom}`);
       } else {
         console.log('Chatroom not found.');
+        toast.error(`Chatroom "${chatroom}" not found. Please check the name and try again.`);
       }
       setChatroom('');
     } catch (error) {
       console.error('An error occurred:', error);
+      toast.error(`An error occurred while joining the chatroom: ${error.message}`);
     }
   };
 

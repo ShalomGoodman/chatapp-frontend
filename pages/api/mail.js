@@ -13,9 +13,9 @@ export default function (req, res) {
   });
 
   const mailData = {
-    from: "Chat API",
+    from: "The Shluchim Office",
     to: req.body.email,
-    subject: `Verify your email`,
+    subject: `Shluchim Online School - Chatapp Verification Email`,
     text: req.body.message,
   };
   transporter.sendMail(mailData, function (err, info) {
