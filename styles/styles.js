@@ -6,7 +6,7 @@ export const ChatContainer = styled.div`
     flex-direction: column;
     justify-content:center;
     background: #f2f2f2;
-    padding: 40px;
+    padding: 0px;
     margin: auto;
     max-width: 100vw;
     box-shadow: 5px 10px 18px #888888;
@@ -22,7 +22,7 @@ export const StyledContainer = styled.div`
 `;
 
 export const ChatBox = styled.div`
-    width: 60%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     background: #FFFFFF;
@@ -44,3 +44,6 @@ export const SendIcon = styled.div`
         outline: none;
     }
 `;
+export const NavigationBar = styled.div`
+    padding: 20px 20px;
+    `;

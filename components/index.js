@@ -14,6 +14,7 @@ import {
   ChatBox,
   StyledButton,
   SendIcon,
+  NavigationBar,
 } from "../styles/styles";
 
 function ChatRoom({ username, id, userId }) {
@@ -36,10 +37,8 @@ function ChatRoom({ username, id, userId }) {
   useEffect(() => {
 
     io.on("disconnect", () => {
-      io.off();
-      location.replace(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/`);
-      console.log("disconnected");
-      toast.error('Disconnected from server. Please refresh the page.');
+      location.reload();
+      toast.error('Disconnected from server. Refreshing the page the page.');
     });
 
     io.emit("join", { username, chatroom, userId, activeUser }, (error) => {
@@ -183,16 +182,10 @@ function ChatRoom({ username, id, userId }) {
 
   return (
     <ChatContainer>
-      <Header room={currentChatName} />  
+      <Header />  
       <StyledContainer>
-        <div>
-          <h2>Hello, {username}</h2>
-          <h3>Members of room: {currentChatName}</h3>
-          <ul>
-            {currentChatUsers.map((user, index) => (
-              <li key={index}>{user.users}</li>
-            ))}
-          </ul>
+        <NavigationBar>
+          <h2>Hello, {username}</h2>        
           <h3>Create a Chat</h3>
           <input onChange={(e) => setChatName(e.target.value)} type="text" placeholder="Make a chat name" />
           <Button onClick={handleChatCreate}>Create Chat</Button>
@@ -201,11 +194,23 @@ function ChatRoom({ username, id, userId }) {
               <button onClick={() => handleChatChange(chat.id)} key={chat.id}>{chat.attributes.chat_name}</button>
             ))}
           <h3>Join a Chat</h3>
-              <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
-        </div>
+          <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
+        </NavigationBar>
 
         <ChatBox>
-          
+        <div style={
+          {
+            paddingTop: "10px",
+            paddingLeft: "20px",
+            backgroundColor: "#f5f5f5",
+          }
+        }>
+          <h2 style={{ display: 'inline-block' }}>#{currentChatName}</h2>
+          <div style={{ display: 'inline-block', marginLeft: '10px' }}>
+            {currentChatUsers.map(user => user.users).join(', ')}
+          </div>
+        </div>
+
           <Messages messages={messages} username={username} />
           <Input
             type="text"
