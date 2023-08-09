@@ -1,6 +1,5 @@
-/* eslint-disable */
 import React from "react";
-import { useRouter } from 'next/router'; // <-- Import useRouter hook from next/router
+import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 
 function Header(props) {
@@ -9,11 +8,10 @@ function Header(props) {
 
   const handleLogout = () => {
     console.log("logout");
-    if (typeof window !== 'undefined') { // Check if window object exists
+    if (typeof window !== 'undefined') {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       localStorage.removeItem("id");
-      localStorage.removeItem("active_user");
     }
     router.push('/login');
     toast.success(`Logged out successfully!`);
@@ -31,9 +29,18 @@ function Header(props) {
         width: "100%",
       }}
     >
+      <img 
+        src="https://collive.com/wp-content/uploads/awpcp/images/logo-stacked-96fbd396-large.png" 
+        style={{
+          height: "50px",
+          borderRadius: "10px",
+          marginLeft: "10px",
+          backgroundColor: "white",
+        }}
+      />
       <div
         style={{
-          flex: "0.5",
+          flex: "1",
           display: "flex",
           alignItems: "center",
           marginLeft: "5%",
@@ -43,7 +50,7 @@ function Header(props) {
         <div
           style={{
             color: "#11ec11",
-            marginrRight: "10px",
+            marginRight: "10px",
           }}
         >
           <i className="fa fa-circle" aria-hidden="true"></i>
@@ -53,6 +60,8 @@ function Header(props) {
       <div
         style={{
           marginRight: "5%",
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <a href="/">
@@ -65,7 +74,7 @@ function Header(props) {
             <i className="fa fa-times-circle" aria-hidden="true"></i>
           </div>
         </a>
-        <button onClick={handleLogout}>Logout</button>
+        <button onClick={handleLogout} style={{ marginLeft: "10px" }}>Logout</button>
       </div>
     </div>
   );
