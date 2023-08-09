@@ -202,7 +202,7 @@ function ChatRoom({ username, id, userId }) {
           {
             paddingTop: "10px",
             paddingLeft: "20px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "#91bed4",
           }
         }>
           <h2 style={{ display: 'inline-block' }}>#{currentChatName}</h2>

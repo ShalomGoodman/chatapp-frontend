@@ -1,4 +1,5 @@
 import React from "react";
+import Image from 'next/image'
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 
@@ -23,19 +24,21 @@ function Header(props) {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: "#2979FF",
+        background: "#f26101",
         borderRadius: "4px 4px 0 0",
         height: "60px",
         width: "100%",
       }}
     >
-      <img 
+      <Image
         src="https://collive.com/wp-content/uploads/awpcp/images/logo-stacked-96fbd396-large.png" 
+        alt="logo"
+        width={100}
+        height={50}
+
         style={{
           height: "50px",
-          borderRadius: "10px",
-          marginLeft: "10px",
-          backgroundColor: "white",
+          width: "100px",
         }}
       />
       <div
