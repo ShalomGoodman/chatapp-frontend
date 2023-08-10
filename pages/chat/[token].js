@@ -19,7 +19,7 @@ export default function Chat() {
 
     console.log("Token from URL:", token);
 
-    if (!token) return router.push("/");
+    // if (!token) return router.push("/");
 
     try {
       const payload = jwt.verify(token, SECRET);

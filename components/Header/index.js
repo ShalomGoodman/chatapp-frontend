@@ -31,7 +31,7 @@ function Header(props) {
       }}
     >
       <Image
-        src="https://collive.com/wp-content/uploads/awpcp/images/logo-stacked-96fbd396-large.png" 
+        src="https://collive.com/wp-content/uploads/awpcp/images/logo-stacked-96fbd396-large.png"
         alt="logo"
         width={100}
         height={50}
@@ -62,9 +62,10 @@ function Header(props) {
       </div>
       <div
         style={{
-          marginRight: "5%",
           display: "flex",
           alignItems: "center",
+          justifyContent: "flex-end", // This will align the items to the right
+          marginRight: "5%",
         }}
       >
         <a href="/">
@@ -77,8 +78,22 @@ function Header(props) {
             <i className="fa fa-times-circle" aria-hidden="true"></i>
           </div>
         </a>
-        <button onClick={handleLogout} style={{ marginLeft: "10px" }}>Logout</button>
+        <button onClick={handleLogout} style={{
+          padding: "10px 20px",
+          fontSize: "16px",
+          borderRadius: "5px",
+          border: "none",
+          cursor: "pointer",
+          backgroundColor: "#2979FF",
+          color: "white",
+          transition: "background-color 0.3s",
+          outline: "none",
+          marginLeft: "10px" // Adding some space between the icon and button
+        }}>
+          Logout
+        </button>
       </div>
+
     </div>
   );
 }
