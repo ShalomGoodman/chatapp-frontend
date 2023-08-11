@@ -68,16 +68,6 @@ function Header(props) {
           marginRight: "5%",
         }}
       >
-        <a href="/">
-          <div
-            style={{
-              fontSize: "20px",
-              color: "#fff",
-            }}
-          >
-            <i className="fa fa-times-circle" aria-hidden="true"></i>
-          </div>
-        </a>
         <button onClick={handleLogout} style={{
           padding: "10px 20px",
           fontSize: "16px",
