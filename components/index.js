@@ -6,14 +6,16 @@ import "antd/dist/antd.css";
 import Header from "./Header";
 import Messages from "./Messages";
 import Searchbox from "./Searchbox";
+import Chatlist from "./Chatlist"
+import ChatCreate from "./ChatCreate"
+import ChatHeader from "./ChatHeader";
+import MessageInput from "./MessageInput";
 import socket from "socket.io-client";
 import { toast } from 'react-toastify';
 import {
   ChatContainer,
   StyledContainer,
   ChatBox,
-  StyledButton,
-  SendIcon,
   NavigationBar,
 } from "../styles/styles";
 
@@ -118,9 +120,7 @@ function ChatRoom({ username, id, userId }) {
   }, [username, chatroom]);
 
   const sendMessage = (message, chatroom) => {
-    console.log("sendMessage function triggered.");
     if (message) {
-      console.log("Message:", message);
       let strapiData = {
         data: {
           user: username,
@@ -129,21 +129,18 @@ function ChatRoom({ username, id, userId }) {
         },
       };
       io.emit("sendMessage", strapiData, (error) => {
-        console.log("send message was emitted.");
         if (error) {
           alert(error);
           console.log(`there was an error: ${error}`);
         }
       });
       setMessage("");
-      console.log("Message sent.");
     } else {
-      alert("Message can't be empty");
+      toast.error("Message can't be empty")
     }
   };
 
   const handleMessageSend = () => {
-    console.log("handleMessageSend function triggered.");
     sendMessage(message, chatroom);
   };
 
@@ -182,57 +179,30 @@ function ChatRoom({ username, id, userId }) {
 
   return (
     <ChatContainer>
-      <Header />  
+
+      <Header />
+
       <StyledContainer>
+
         <NavigationBar>
-          <h2>Hello, {username}</h2>        
-          <h3>Create a Chat</h3>
-          <input onChange={(e) => setChatName(e.target.value)} type="text" placeholder="Make a chat name" />
-          <Button onClick={handleChatCreate}>Create Chat</Button>
-          <h3>Joined Chats</h3>
-            {joinedChats.map((chat) => (
-              <button onClick={() => handleChatChange(chat.id)} key={chat.id}>{chat.attributes.chat_name}</button>
-            ))}
-          <h3>Join a Chat</h3>
+          <h2>Hello, {username}!</h2>        
+          <ChatCreate setChatName={setChatName} handleChatCreate={handleChatCreate} chatName={chatName} />
+          <Chatlist joinedChats={joinedChats} handleChatChange={handleChatChange}/>
           <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
         </NavigationBar>
 
         <ChatBox>
-        <div style={
-          {
-            paddingTop: "10px",
-            paddingLeft: "20px",
-            backgroundColor: "#91bed4",
-          }
-        }>
-          <h2 style={{ display: 'inline-block' }}>#{currentChatName}</h2>
-          <div style={{ display: 'inline-block', marginLeft: '10px' }}>
-            {currentChatUsers.map(user => user.users).join(', ')}
-          </div>
-        </div>
-
+          <ChatHeader currentChatName={currentChatName} currentChatUsers={currentChatUsers} />
           <Messages messages={messages} username={username} />
-          <Input
-            type="text"
-            placeholder="Type your message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent a newline character or other default action
-                handleMessageSend();
-              }
-            }}
+          <MessageInput
+            message={message}
+            setMessage={setMessage}
+            handleMessageSend={handleMessageSend}
           />
-          <StyledButton onClick={handleMessageSend}>
-            <SendIcon>
-              <i className="fa fa-paper-plane" />
-            </SendIcon>
-          </StyledButton>
-          
         </ChatBox>
 
       </StyledContainer>
+
     </ChatContainer>
   );
 }
