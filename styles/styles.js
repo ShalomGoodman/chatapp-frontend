@@ -5,7 +5,7 @@ export const ChatContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content:center;
-    background: #f2f2f2;
+    background: #d9e8f5;
     padding: 0px;
     margin: auto;
     max-width: 100vw;
@@ -30,7 +30,7 @@ export const ChatBox = styled.div`
 
 export const StyledButton = styled(Button)`
     height: 45px;
-    background: #2979FF;
+    background: #91bed4;
     transition: 0.5s;
 `
 export const SendIcon = styled.div`

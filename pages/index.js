@@ -53,7 +53,7 @@ export default function Home() {
     };
     const SECRET = "this is a secret";
     const token = jwt.sign(account, SECRET);
-    let message = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/chat/${token}`;
+    let message = `This is your personal link to login to your account. Please save it and dont share it with anyone. If you are having trouble logging in, just click the link again to reset any issues. ${process.env.NEXT_PUBLIC_FRONTEND_URL}/chat/${token}`;
     let data = {
       email, // User's email
       message,
