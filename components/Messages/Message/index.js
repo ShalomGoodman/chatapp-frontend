@@ -20,7 +20,7 @@ function Message(props) {
   console.log('createdAt value:', createdAt);
   console.log(props)
 
-  let formatted = 'Invalid date'; // Default value
+  let formatted = ''; // Default value
 
   if (createdAt) {
     const time = new Date(createdAt);
