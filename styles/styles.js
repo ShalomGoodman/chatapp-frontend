@@ -9,7 +9,6 @@ export const ChatContainer = styled.div`
     padding: 0px;
     margin: auto;
     max-width: 100vw;
-    box-shadow: 5px 10px 18px #888888;
     height: 100vh;
 `;
 
