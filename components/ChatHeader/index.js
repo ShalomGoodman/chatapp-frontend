@@ -7,7 +7,6 @@ function ChatHeader({ currentChatName, currentChatUsers }) {
               paddingTop: "10px",
               paddingLeft: "20px",
               backgroundColor: "#91bed4",
-              whiteSpace: "nowrap", // Add this line
             }
           }>
             <h2 style={{ display: 'inline-block' }}>#{currentChatName}</h2>

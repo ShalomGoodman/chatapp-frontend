@@ -64,7 +64,7 @@ function Header(props) {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-end", // This will align the items to the right
+          justifyContent: "flex-end",
           marginRight: "5%",
         }}
       >
@@ -78,7 +78,7 @@ function Header(props) {
           color: "white",
           transition: "background-color 0.3s",
           outline: "none",
-          marginLeft: "10px" // Adding some space between the icon and button
+          marginLeft: "10px",
         }}>
           Logout
         </button>
