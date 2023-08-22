@@ -17,9 +17,6 @@ function Message(props) {
   const textColor = sentByCurrentUser ? "white" : "dark";
   const sentBy = sentByCurrentUser ? "left" : "right";
 
-  console.log('createdAt value:', createdAt);
-  console.log(props)
-
   let formatted = '';
 
   if (createdAt) {
