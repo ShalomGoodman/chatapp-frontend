@@ -185,9 +185,9 @@ function ChatRoom({ username, id, userId }) {
       <StyledContainer>
 
         <NavigationBar>
-          <h2>Hello, {username}!</h2>        
+          <h2>Hello, {username}!</h2>   
+          <Chatlist joinedChats={joinedChats} handleChatChange={handleChatChange}/>     
           <ChatCreate setChatName={setChatName} handleChatCreate={handleChatCreate} chatName={chatName} />
-          <Chatlist joinedChats={joinedChats} handleChatChange={handleChatChange}/>
           <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
         </NavigationBar>
 

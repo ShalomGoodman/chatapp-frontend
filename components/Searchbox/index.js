@@ -49,7 +49,21 @@ function Searchbox({ chatChange, activeUser }) {
   return (
     <div>
       <h3>Join a Chat</h3>
-      <input onChange={handleChange} type="text" placeholder="Search" />
+      <input
+        onChange={handleChange}
+        type="text"
+        placeholder="Search"
+        style={
+          {
+            width: "80%",
+            padding: "5px",
+            border: "none",
+            borderRadius: "5px",
+            marginBottom: "10px",
+            marginRight: "10px",
+          }
+        }
+        />
       <button onClick={handleSubmit} disabled={chatroom == ''} type="submit">Join</button>
     </div>
   );

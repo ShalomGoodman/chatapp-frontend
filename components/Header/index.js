@@ -25,7 +25,6 @@ function Header(props) {
         alignItems: "center",
         justifyContent: "space-between",
         background: "#f26101",
-        borderRadius: "4px 4px 0 0",
         height: "60px",
         width: "100%",
       }}
