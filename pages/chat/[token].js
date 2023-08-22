@@ -40,7 +40,11 @@ export default function Chat() {
               localStorage.setItem("username", account.data.attributes.username);
               localStorage.setItem("token", account.data.attributes.token);
               localStorage.setItem("id", account.data.id);
-              localStorage.setItem("active_user", account.data.attributes.active_user.data.id);
+              if (account.data.attributes.active_user && account.data.attributes.active_user.data) {
+                localStorage.setItem("active_user", account.data.attributes.active_user.data.id);
+              } else {
+                console.warn("active_user or its data is null. Check the response from the server.");
+              }              
             }
 
             if (token !== account.data.attributes.token) {
