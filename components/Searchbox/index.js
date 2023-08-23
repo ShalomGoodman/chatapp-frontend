@@ -7,7 +7,7 @@ function Searchbox({ chatChange, activeUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms?pagination[pageSize]=100`);
       const response = await res.json();
       const selectedChatroom = response.data.find((chat) => chat.attributes.chat_name === chatroom);
       if (selectedChatroom) {

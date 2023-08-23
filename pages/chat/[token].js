@@ -21,6 +21,13 @@ export default function Chat() {
 
     // if (!token) return router.push("/");
 
+    function removeLocalStorage() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("id");
+      localStorage.removeItem("active_user");
+    }
+
     try {
       const payload = jwt.verify(token, SECRET);
       console.log("JWT payload:", payload);
@@ -51,10 +58,7 @@ export default function Chat() {
               console.warn("Token mismatch detected:", token, account.data.attributes.token);
               if (typeof window !== 'undefined') { // <-- Check if window object exists
                 console.log("Removing items from local storage due to token mismatch.");
-                localStorage.removeItem("token");
-                localStorage.removeItem("username");
-                localStorage.removeItem("id");
-                localStorage.removeItem("active_user");
+                removeLocalStorage()
               }
               return router.push("/");
             }
@@ -64,10 +68,7 @@ export default function Chat() {
             console.error("An error occurred while fetching the account:", e.message);
             if (typeof window !== 'undefined') { // <-- Check if window object exists
               console.log("Removing items from local storage due to error.");
-              localStorage.removeItem("token");
-              localStorage.removeItem("username");
-              localStorage.removeItem("id");
-              localStorage.removeItem("active_user");
+              removeLocalStorage()
             }
             return router.push("/");
           });
@@ -82,7 +83,7 @@ export default function Chat() {
   return (
     <div>
       {done == "done" && userr === "done" ? (
-        <ChatRoom username={username} id={1} userId={id} />
+        <ChatRoom username={username} id={35} userId={id} />
       ) : (
         <h1>Verifying token..... Please wait</h1>
       )}
