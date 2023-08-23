@@ -140,6 +140,18 @@ function ChatRoom({ username, id, userId }) {
     }
   };
 
+  const remountChatList = () => {
+    io.emit("roomData");
+    fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/active-users/${activeUser}?populate=chatrooms`)
+      .then(async (res) => {
+        const response = await res.json();
+  
+        let arr = response.data.attributes.chatrooms.data.map((chatroom) => chatroom);
+        setJoinedChats(arr);
+      })
+      .catch((e) => console.log(e.message));
+  }
+
   const handleMessageSend = () => {
     sendMessage(message, chatroom);
   };
@@ -148,7 +160,8 @@ function ChatRoom({ username, id, userId }) {
     let strapiData = {
       data: {
         chat_name: chatName,
-        active_users: [{"id": activeUser}]
+        active_users: [{"id": activeUser}],
+        admin: username,
       },
     };
     await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms`, {
@@ -175,6 +188,67 @@ function ChatRoom({ username, id, userId }) {
     setChatroom(chatroom);
   };
 
+  const handleChatLeave = async (chatroomId) => {
+    const confirm = window.confirm(`Are you sure you want to leave this chatroom?`);
+    if (confirm) {
+    try {
+      const updatedActiveUserData = {
+        data: {
+          chatrooms: {
+            disconnect: [{ id: chatroomId }]
+          }
+        }
+      };
+  
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/active-users/${activeUser}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedActiveUserData),
+      });
+  
+      if (res.ok) {
+        toast.success(`Successfully left chatroom`);
+        remountChatList(); // Remount the Chatlist component
+      } else {
+        const response = await res.json();
+        toast.error(`Failed to leave chatroom: ${response.message}`);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      toast.error(`An error occurred while leaving the chatroom: ${error.message}`);
+    }
+  } else {
+    return;
+  }
+  };
+  
+  const handleChatDelete = async (chatroomId) => {
+    if (confirm(`Are you sure you want to delete this chat?`)) {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_SERVER_URL}/api/chatrooms/${chatroomId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
+        if (res.ok) {
+          toast.success(`Chatroom was deleted!`);
+          remountChatList(); // Remount the Chatlist component
+        } else {
+          const response = await res.json();
+          toast.error(`Failed to delete chatroom: ${response.message}`);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+        toast.error(`An error occurred while deleting the chatroom: ${error.message}`);
+      }
+    }
+  };
+  
+
+
 
 
   return (
@@ -186,7 +260,13 @@ function ChatRoom({ username, id, userId }) {
 
         <NavigationBar>
           <h2>Hello, {username}!</h2>   
-          <Chatlist joinedChats={joinedChats} handleChatChange={handleChatChange}/>     
+          <Chatlist
+            joinedChats={joinedChats}
+            handleChatChange={handleChatChange}
+            deleteChat={handleChatDelete}
+            leaveFromChat={handleChatLeave}
+            username={username}
+            />     
           <ChatCreate setChatName={setChatName} handleChatCreate={handleChatCreate} chatName={chatName} />
           <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
         </NavigationBar>
