@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useState } from 'react';
 
 function Chatlist({ joinedChats, handleChatChange, leaveFromChat, deleteChat, username }) {
