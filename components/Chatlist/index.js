@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unknown-property */
 
 import React, { useState } from 'react';
 
