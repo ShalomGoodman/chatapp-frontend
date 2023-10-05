@@ -10,6 +10,7 @@ import Chatlist from "./Chatlist"
 import ChatCreate from "./ChatCreate"
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
+import Chatgpt from "./Chatgpt";
 import socket from "socket.io-client";
 import { toast } from 'react-toastify';
 import {
@@ -273,12 +274,17 @@ function ChatRoom({ username, id, userId }) {
 
         <ChatBox>
           <ChatHeader currentChatName={currentChatName} currentChatUsers={currentChatUsers} />
+          {currentChatName === 'chatgpt' ? <Chatgpt username={username} /> : 
+          <>
           <Messages messages={messages} username={username} />
           <MessageInput
             message={message}
             setMessage={setMessage}
             handleMessageSend={handleMessageSend}
           />
+          </>
+        }
+
         </ChatBox>
 
       </StyledContainer>
