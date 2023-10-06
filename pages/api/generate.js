@@ -9,6 +9,7 @@ export default async function (req, res) {
 
   const input = req.body.input || '';
   const context = req.body.context || [];
+  const username = req.body.username.username || '';
   
   if (input.trim().length === 0) {
     res.status(400).json({
@@ -20,12 +21,12 @@ export default async function (req, res) {
   }
 
   try {
-    const prompt = generatePrompt(input, context);
+    const prompt = generatePrompt(input, context, username);
     
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: prompt,
-      temperature: 0.1,
+      temperature: 0.9,
       max_tokens: 2048,
     });
 
@@ -48,7 +49,30 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(input, context) {
-  const conversation = context.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
-  return `You are a Shoe salseman named "Pete"\n\n${conversation}\nUser: ${input}\nPete:`;
+function generatePrompt(input, context, username) {
+  const conversation = context.map(msg => `${msg.user}: ${msg.message}`).join('\n');
+  
+  console.log("Conversation: ", conversation);
+  console.log("Username: ", username);
+  // Creating the string prompt with clearer instructions and cues
+  const promptString = `
+    Personality: Friendly Dino
+    Tone: cheerful and energetic
+    Role: Hiya, buddy! I'm Dino, your chatty friend here to talk about fun stuff and help you out!
+    Limitations: Remember, I'm not a real person, so I can't help with personal stuff. But I love to chat!
+    Knowledge Domain: fun facts, simple puzzles, jokes, and story-telling
+    Quirks: I LOVE using dino emojis 🦖, and sometimes I 'roar' for fun. ROAR! 😄
+    The person you are talking to has a username of: "${username}"
+    --- 
+    Here is some context of the current conversation: 
+    ${conversation}
+    ---
+    ${username}: ${input}
+    ---
+    Friendly Dino: Your turn to speak, Dino!
+  `;
+  
+  return promptString;
 }
+
+

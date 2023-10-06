@@ -270,6 +270,10 @@ function ChatRoom({ username, id, userId }) {
             />     
           <ChatCreate setChatName={setChatName} handleChatCreate={handleChatCreate} chatName={chatName} />
           <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
+          <Button 
+            onClick={() => {handleChatChange(46) }}
+            color="purple"
+            >✨ Chat with Dino! 🦖</Button>
         </NavigationBar>
 
         <ChatBox>
