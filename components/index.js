@@ -10,7 +10,6 @@ import Chatlist from "./Chatlist"
 import ChatCreate from "./ChatCreate"
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
-import Chatgpt from "./Chatgpt";
 import socket from "socket.io-client";
 import { toast } from 'react-toastify';
 import {
