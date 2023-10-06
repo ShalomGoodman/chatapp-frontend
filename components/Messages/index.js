@@ -12,6 +12,8 @@ function Messages(props) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  console.log("Messages:", messages);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);

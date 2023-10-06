@@ -8,7 +8,9 @@ function Message(props) {
   } = props;
   let sentByCurrentUser = false;
 
-  if (user === username) {
+  const usersName = username.username;
+
+  if (user === username || user === usersName) {
     sentByCurrentUser = true;
   }
 
