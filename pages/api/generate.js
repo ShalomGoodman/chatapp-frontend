@@ -9,7 +9,7 @@ export default async function (req, res) {
 
   const input = req.body.input || '';
   const context = req.body.context || [];
-  const username = req.body.username.username || '';
+  const username = req.body.username || '';
   
   if (input.trim().length === 0) {
     res.status(400).json({

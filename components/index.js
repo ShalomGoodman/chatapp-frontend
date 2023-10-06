@@ -29,6 +29,8 @@ function ChatRoom({ username, id, userId }) {
   const [chatName, setChatName] = useState("");
   const [currentChatUsers, setCurrentChatUsers] = useState([]);
   const [currentChatName, setCurrentChatName] = useState("");
+  const [Input, setInput] = useState("");
+  const [chatGptMessages, setChatGptMessages] = useState([]);
   
   const activeUser = localStorage.getItem("active_user");
 
@@ -247,6 +249,61 @@ function ChatRoom({ username, id, userId }) {
       }
     }
   };
+
+  let chatProps = {};
+
+if (currentChatName === 'chatgpt') {
+  chatProps = {
+    messages: chatGptMessages,
+    username: username,
+    message: Input,
+    setMessage: setInput,
+    handleMessageSend: onSubmit
+  };
+} else {
+  chatProps = {
+    messages: messages,
+    username: username,
+    message: message,
+    setMessage: setMessage,
+    handleMessageSend: handleMessageSend
+  };
+}
+
+async function onSubmit(event) {
+
+  try {
+      setInput("");
+      console.log("Input:", Input);
+      console.log("Messages:", chatGptMessages);
+      console.log("Username:", username, "Type:", typeof username);
+      setChatGptMessages(prevMessages => [...prevMessages, { user: username, message: Input, createdAt: Date.now()}]);
+
+      const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ input: Input, context: chatGptMessages, username: username}),
+      })
+
+      if (!response.ok) {
+          const text = await response.text();
+          console.error('Server error:', text);
+          throw new Error(`Server error: ${text}`);
+      }
+
+      const data = await response.json();
+      // Append AI message to messages array
+      setChatGptMessages(prevMessages => [...prevMessages, { user: 'Dino', message: data.result, createdAt: Date.now()}]);
+
+
+      
+  } catch (error) {
+      console.error(error);
+      alert(error.message);
+  }
+}
   
 
 
@@ -278,16 +335,12 @@ function ChatRoom({ username, id, userId }) {
 
         <ChatBox>
           <ChatHeader currentChatName={currentChatName} currentChatUsers={currentChatUsers} />
-          {currentChatName === 'chatgpt' ? <Chatgpt username={username} /> : 
-          <>
-          <Messages messages={messages} username={username} />
-          <MessageInput
-            message={message}
-            setMessage={setMessage}
-            handleMessageSend={handleMessageSend}
-          />
-          </>
-        }
+              <Messages messages={chatProps.messages} username={username} />
+              <MessageInput
+                message={chatProps.message}
+                setMessage={chatProps.setMessage}
+                handleMessageSend={chatProps.handleMessageSend}
+              />
 
         </ChatBox>
 
