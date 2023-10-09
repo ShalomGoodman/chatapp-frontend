@@ -252,6 +252,7 @@ function ChatRoom({ username, id, userId }) {
   let chatProps = {};
 
 if (currentChatName === 'chatgpt') {
+  toast.info(`You are now chatting with Dino!`);
   chatProps = {
     messages: chatGptMessages,
     username: username,
