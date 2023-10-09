@@ -64,7 +64,7 @@ function Header(props) {
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-end",
-          marginRight: "5%",
+          marginRight: "1%",
         }}
       >
         <button onClick={handleLogout} style={{
