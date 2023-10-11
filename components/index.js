@@ -252,7 +252,6 @@ function ChatRoom({ username, id, userId }) {
   let chatProps = {};
 
 if (currentChatName === 'chatgpt') {
-  toast.info(`You are now chatting with Dino!`);
   chatProps = {
     messages: chatGptMessages,
     username: username,
@@ -328,7 +327,11 @@ async function onSubmit(event) {
           <ChatCreate setChatName={setChatName} handleChatCreate={handleChatCreate} chatName={chatName} />
           <Searchbox chatChange={handleChatChange} activeUser={activeUser}/>
           <Button 
-            onClick={() => {handleChatChange(46) }}
+            onClick={() => {
+              handleChatChange(46)
+              toast.info(`You are now chatting with Dino! This is an Experimental feature, please keep in mind that the AI may be inaccurate or incorrect.`);
+              setChatGptMessages(prevMessages => [...prevMessages, { user: 'Dino', message: "Hello, my name is Dino, your AI friend", createdAt: Date.now()}]);
+            }}
             color="purple"
             >✨ Chat with Dino! 🦖</Button>
         </NavigationBar>
